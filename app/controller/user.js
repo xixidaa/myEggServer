@@ -8,7 +8,6 @@ const createRule = {
   nickname: { type: 'string' },
   passwd: { type: 'string' },
   captcha: { type: 'string' },
-  emailcode: { type: 'string' },
 }
 
 class UserController extends BaseController {
@@ -92,7 +91,11 @@ class UserController extends BaseController {
   }
 
   async info() {
-    this.success('查询成功')
+    const { ctx } = this
+
+    const { email } = ctx.state
+    const user = await this.checkEmail(email)
+    this.success(user)
   }
 }
 

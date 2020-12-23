@@ -5,6 +5,7 @@
  */
 module.exports = app => {
   const { router, controller } = app
+  const jwtMiddleware = app.middleware.jwt({ app })
   router.get('/', controller.home.index)
   // 验证码服务
   router.get('/captcha', controller.utils.captcha)
@@ -18,6 +19,7 @@ module.exports = app => {
     router.post('/register', register)
     router.post('/login', login)
     router.get('/verify', verify)
-    router.get('/info', info)
+    // 插入token检验中间件
+    router.get('/info', jwtMiddleware, info)
   })
 }
