@@ -2,16 +2,49 @@
 const md5 = require('md5')
 const HashSalt = ':wangning@666'
 const BaseController = require('./base')
+const jwt = require('jsonwebtoken')
 const createRule = {
   email: { type: 'email' },
   nickname: { type: 'string' },
   passwd: { type: 'string' },
   captcha: { type: 'string' },
+  emailcode: { type: 'string' },
 }
 
 class UserController extends BaseController {
   async login() {
-    this.success('登录成功')
+    const { ctx, app } = this
+    const { email, passwd, captcha, emailcode } = ctx.request.body
+
+    // 检验验证码
+    if (captcha.toUpperCase() !== ctx.session.captcha.toUpperCase()) {
+      return this.error('验证码错误')
+    }
+
+    // 检验邮箱验证码
+    if (emailcode.toUpperCase() !== ctx.session.emailCode.toUpperCase()) {
+      return this.error('邮箱验证码错误')
+    }
+
+    const user = await ctx.model.User.findOne({
+      email,
+      passwd: md5(passwd + HashSalt),
+    })
+
+    if (!user) {
+      return this.error('用户名或密码错误')
+    }
+
+    // 登陆成功 把用户信息加密成token返回
+    // token构成 第一块: header 第二块: payload承载信息 第三块: 签名 由一二部分加上secret通过某种加密方式形成
+    const token = jwt.sign({
+      _id: user._id,
+      email,
+    }, app.config.jwt.secret, {
+      expiresIn: '1h',
+    })
+
+    this.success({ token, email, nickname: user.nickname })
   }
   async register() {
     const { ctx } = this
@@ -23,6 +56,8 @@ class UserController extends BaseController {
     }
 
     const { email, passwd, nickname, captcha } = ctx.request.body
+
+    console.log(ctx.request.body)
 
     // 检验验证码
     if (captcha.toUpperCase() !== ctx.session.captcha.toUpperCase()) {
