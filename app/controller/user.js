@@ -11,7 +11,7 @@ const createRule = {
 
 class UserController extends BaseController {
   async login() {
-
+    this.success('登录成功')
   }
   async register() {
     const { ctx } = this
@@ -53,9 +53,11 @@ class UserController extends BaseController {
 
   async verify() {
     // 检验用户是否存在
+    this.success('验证成功')
   }
-  async info() {
 
+  async info() {
+    this.success('查询成功')
   }
 }
 
