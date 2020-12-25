@@ -1,7 +1,6 @@
 /* eslint valid-jsdoc: "off" */
-
 'use strict'
-
+const path = require('path')
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
@@ -17,6 +16,14 @@ module.exports = appInfo => {
 
   // add your middleware config here
   config.middleware = []
+
+  // 设置文件上传
+  config.multipart = {
+    mode: 'file',
+    whitelist: () => true,
+  }
+  // 配置默认上传路径
+  config.UPLOAD_DIR = path.resolve(__dirname, '..', 'app/public')
 
   // add your user config here
   const userConfig = {
