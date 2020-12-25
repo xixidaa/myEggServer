@@ -43,6 +43,9 @@ class UtilsController extends BaseController {
   async uploadFile() {
     const { ctx } = this
     const file = ctx.request.files[0]
+    if (!file) {
+      return this.error('请至少上传一张图片', -1)
+    }
     const filename = file.filename
     console.log(file, filename)
     await fse.move(file.filepath, this.config.UPLOAD_DIR + `/${filename}`)

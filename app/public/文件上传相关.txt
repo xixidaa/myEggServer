@@ -1,0 +1,15 @@
+一. 真正校验文件格式
+.jpg :  前两个: FF D8 最后两个: FF D9
+.gif : 前缀: 47 49 46 38 39 61 3C
+.png: 前缀: 89 50 4E 47 0D 0A 1A
+
+二. 断点续传
+大文件切片上传
+
+mongod -dbpath "D:\Software\data" -logpath "D:\Software\log\mongod.log" -install -serviceName "MongoDB" ，
+
+net start MongoDB 开启服务
+net stop MongoDB 关闭服务
+
+controller 处理业务逻辑 
+service 处理通用逻辑(手机验证码)
