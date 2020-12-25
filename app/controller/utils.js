@@ -47,7 +47,6 @@ class UtilsController extends BaseController {
       return this.error('请至少上传一张图片', -1)
     }
     const filename = file.filename
-    console.log(file, filename)
     await fse.move(file.filepath, this.config.UPLOAD_DIR + `/${filename}`)
     this.message({
       url: `/public/${filename}`,
